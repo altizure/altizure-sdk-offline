@@ -26,6 +26,7 @@ You can view the data directly or change to your own data. Please follow the ori
 project
 │   README.md
 │   index.html
+│   crop_and_water.html
 │
 └───public
 │   └───data
