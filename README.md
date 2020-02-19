@@ -18,8 +18,9 @@ A simple demo to use Altizure offline without the online services.
 
 ## files
 
-We have provided an example data for your testing, you can download from pan.baidu
-链接:https://pan.baidu.com/s/10naIEgdmeihZ_x-fILSa5Q  密码:xjhm
+We have provided an example data for your testing, you can download from pan.baidu.
+
+Link: https://pan.baidu.com/s/10naIEgdmeihZ_x-fILSa5Q  Password: xjhm
 
 You can view the data directly or change to your own data. Please follow the original folder structure if you use your own data.
 ```
