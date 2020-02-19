@@ -1,0 +1,76 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title> Altizure SDK offline demo </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+</head>
+
+<body style="margin: 0px; padding: 0px;">
+  <div id="page-content"></div>
+  <!-- <script type="text/javascript" src="public/js/altizure.min.js"></script> -->
+  <script type="text/javascript" src="public/js/three.js"></script>
+  <script type="text/javascript" src="public/js/altizure-core.min.js"></script>
+  <script>
+    let options = {
+      altizureApi: {
+        key: '7MkQf8UggsPaadvrlKALspJWZejZAJOLHn3cnIy'
+      },
+      camera: {
+        center: { "lng": 113.94415847977668, "lat": 22.537916491624586, "alt": 195, "north": 0, "tilt": 52, "up": 0 }
+      },
+      renderItems: {
+        earth: false, // earth globe
+        orbitRing: false // earth orbit ring
+      }
+    }
+
+    let sandbox = new altizure.Sandbox('page-content', options)
+
+    let spec
+    let marker
+    let cropInfo, waterInfo
+    // You can change to your own PID 
+    const API_INFO_PATH = './public/data/5e4b996a644d92218b47e373/apiinfo-5e4b996a644d92218b47e373.json'
+    const CROP_INFO_PATH = './public/data/5e4b996a644d92218b47e373/cropmask-5e4b996a644d92218b47e373.json'
+    const WATER_INFO_PATH = './public/data/5e4b996a644d92218b47e373/watermask-5e4b996a644d92218b47e373.json'
+    const WATER_TEXTURE_PATH = 'http://localhost:8000/public/assets/img/waternormals.jpg'
+    Promise.all([
+      fetch(API_INFO_PATH),
+      fetch(CROP_INFO_PATH),
+      fetch(WATER_INFO_PATH)
+    ]).then(res => {
+      return Promise.all(res.map(b => b.json()))
+    }).then(([api_json, crop_json, water_json]) => {
+      replaceWithDefaultHost(api_json)
+      cropInfo = crop_json
+      waterInfo = water_json
+      return altizure.altizureSpecWithApiInfo(api_json)
+    }).then( res=> {
+      console.log('spec', JSON.stringify(res))
+      spec = res
+      // create marker with the modified spec
+      marker = new altizure.AltizureProjectMarker({
+        sandbox: sandbox,
+        spec: spec,
+        countryName: 'China',
+        pose: {
+          position: { lng: 113.9442, lat: 22.5367, alt: 1 } // with an arbitrary position (longitude, latitude, altitude)
+        }
+      })
+      return marker.initialized
+    }).then(m => {
+      m.loadCropMaskLocal(cropInfo)
+      m.water.importLocal(waterInfo, WATER_TEXTURE_PATH)
+      // m.water.import()
+      m.focus()
+    })
+
+    function replaceWithDefaultHost (api_json) {
+      if (!api_json.cloudPath || api_json.cloudPath.length === 0) return
+      api_json.cloudPath[0].dataUrl = api_json.cloudPath[0].dataUrl.replace('<REPLACE_WITH_YOUR_HOSTNAME_PORT>', 'localhost:8000')
+    }
+  </script>
+</body>
+
+</html>
