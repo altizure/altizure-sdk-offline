@@ -8,9 +8,7 @@
 
 <body style="margin: 0px; padding: 0px;">
   <div id="page-content"></div>
-  <!-- <script type="text/javascript" src="public/js/altizure.min.js"></script> -->
-  <script type="text/javascript" src="public/js/three.js"></script>
-  <script type="text/javascript" src="public/js/altizure-core.min.js"></script>
+  <script type="text/javascript" src="public/js/altizure.min.js"></script>
   <script>
     let options = {
       altizureApi: {
@@ -32,8 +30,8 @@
     let cropInfo, waterInfo
     // You can change to your own PID 
     const API_INFO_PATH = './public/data/5e4b996a644d92218b47e373/apiinfo-5e4b996a644d92218b47e373.json'
-    const CROP_INFO_PATH = './public/data/5e4b996a644d92218b47e373/cropmask-5e4b996a644d92218b47e373.json'
-    const WATER_INFO_PATH = './public/data/5e4b996a644d92218b47e373/watermask-5e4b996a644d92218b47e373.json'
+    const CROP_INFO_PATH = './public/data/5e4b996a644d92218b47e373/crop_mask_5e4b996a644d92218b47e373.json'
+    const WATER_INFO_PATH = './public/data/5e4b996a644d92218b47e373/water_mask_5e4b996a644d92218b47e373.json'
     const WATER_TEXTURE_PATH = 'http://localhost:8000/public/assets/img/waternormals.jpg'
     Promise.all([
       fetch(API_INFO_PATH),
@@ -43,6 +41,8 @@
       return Promise.all(res.map(b => b.json()))
     }).then(([api_json, crop_json, water_json]) => {
       replaceWithDefaultHost(api_json)
+      precheckCropJson(crop_json)
+      precheckWaterJson(water_json)
       cropInfo = crop_json
       waterInfo = water_json
       return altizure.altizureSpecWithApiInfo(api_json)
@@ -60,11 +60,33 @@
       })
       return marker.initialized
     }).then(m => {
-      m.loadCropMaskLocal(cropInfo)
-      m.water.importLocal(waterInfo, WATER_TEXTURE_PATH)
+      m.loadCropMaskJson(cropInfo)
+      m.water.importJson(waterInfo, WATER_TEXTURE_PATH)
       // m.water.import()
       m.focus()
     })
+
+    function precheckCropJson (crop_json) {
+      crop_json.maskInfos.map(mask => {
+        if (mask.hasOwnProperty('pack_mask')) {
+          Object.assign(mask, mask.pack_mask)
+          delete mask.pack_mask
+        }
+      })
+    }
+
+    function precheckWaterJson (water_json) {
+      water_json.maskInfos.map(mask => {
+        if (mask.hasOwnProperty('pack_mask')) {
+          Object.assign(mask, mask.pack_mask)
+          delete mask.pack_mask
+          if (mask.hasOwnProperty('property')) {
+            Object.assign(mask, mask.property)
+            delete mask.property
+          }
+        }
+      })
+    }
 
     function replaceWithDefaultHost (api_json) {
       if (!api_json.cloudPath || api_json.cloudPath.length === 0) return
