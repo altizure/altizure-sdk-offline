@@ -64,7 +64,7 @@ project
 ## 如何托管您自己的數據
 
 
-* 保存您的 `.ab` 數據文件和 `info.txt` 文件到 `public\data\<PID>\web\` 目錄中。 `.ab` 文件可以通過[Altizure 桌面端](https://www.altizure.cn/desktop)上的模型同步功能下載。
+* 保存您的 `.ab` 數據文件和 `info.txt` 文件到 `public\data\<PID>\web\` 目錄中。
 * `public\data\<PID>\apiinfo-<PID>.json` 文件中, 更改 `dataUrl` 中的 `<REPLACE_WITH_YOUR_HOSTNAME_PORT>` 為您的域名和端口，比如： `localhost:8000`。 
 * `apiinfo-<PID>.json` 文件可以通過 altizure 官網 overview 頁面下載: https://www.altizure.cn/overview?pid=PID
 * 在 `index.html` 中修改您的 `apiinfo-<PID>.json` 文件請求路徑。如果您完全按教程上面的文件夾結構放置數據，您只需修改PID為您自己的即可。

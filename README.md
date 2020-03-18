@@ -69,7 +69,7 @@ project
 ## how to use your own data
 
 
-* Store your `.ab` data files and `info.txt` in the path `public\data\<PID>\web\`. The .ab files can be downloaded by the project-sync in [Altizure Desktop](https://www.altizure.cn/desktop)
+* Store your `.ab` data files and `info.txt` in the path `public\data\<PID>\web\`.
 * In `public\data\<PID>\apiinfo-<PID>.json`, change `<REPLACE_WITH_YOUR_HOSTNAME_PORT>` in `dataUrl` to your own hostname and port, like `localhost:8000`.
 * The `apiinfo-<PID>.json` file can be downloaded from project overview page: https://www.altizure.cn/overview?pid=PID
 * In `index.html` change your `apiinfo-<PID>.json` request path. If you totally follow the folder structure before, you will only need to change PID to your own.
