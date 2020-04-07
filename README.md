@@ -82,7 +82,7 @@ project
 
 * If you host your ab files on nginx server, you may need to set `Allow-Cross-Origin` to enable visiting the data from different origins. Additionally, a correct error message `404` is required for ab files loading in sdk. 
 * If you use host methods other than nginx, please make sure the two conditions are met: `enable cors`，`return 404 correctly`.
-* You refer to [this article](https://serverfault.com/questions/393532/allowing-cross-origin-requests-cors-on-nginx-for-404-responses/700670) for configure nginx rightly.
+* You can refer to [this article](https://serverfault.com/questions/393532/allowing-cross-origin-requests-cors-on-nginx-for-404-responses/700670) for configure nginx rightly.
 * Here is a demo nginx config to allow cors and return `404` properly.
 ```
 server {
