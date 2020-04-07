@@ -77,3 +77,32 @@ project
 
 ![project with crop and water](./public/assets/img/screen_capture.jpg)
 * If you need to add multiple projects to your scene, you need to use different `apiinfo` for each project. Just request different `apiinfo-<PID>.json` files then add them to scene following the method in `index.html`.
+
+## notice about hosting ab files
+
+* If you host your ab files on nginx server, you may need to set `Allow-Cross-Origin` to enable visiting the data from different origins. Additionally, a correct error message `404` is required for ab files loading in sdk. 
+* If you use host methods other than nginx, please make sure the two conditions are met: `enable cors`，`return 404 correctly`.
+* You refer to [this article](https://serverfault.com/questions/393532/allowing-cross-origin-requests-cors-on-nginx-for-404-responses/700670) for configure nginx rightly.
+* Here is a demo nginx config to allow cors and return `404` properly.
+```
+server {
+    listen 8000;
+    server_name 127.0.0.1:8000;
+    location / {
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,DELETE' always;
+        add_header 'Access-Control-Allow-Header' 'Content-Type,*' always;
+	    root  /home/altizure/demo/data;
+        index index.html index.htm;
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504  /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+```

@@ -72,3 +72,32 @@ project
 
 ![project with crop and water](./public/assets/img/screen_capture.jpg)
 * 如果您需要在您的場景中添加多個模型，您需要為每個模型使用獨立的 `apiinfo`。 參照當前 `index.html` 中的方法，請求多個不同的 `apiinfo-<PID>.json` 文件，然後用這些apiinfo將多個模型添加到場景中。
+
+## 關於托管 ab 文件的註意事項
+
+* 如果您想要托管您的 ab 文件到 nginx 服務器上，您可能需要設置允許跨域，使得能夠從多個站點訪問您的數據。另外，對於找不到的文件，必須確保服務器能正確返回`404`信息，才能使ab文件正確加載。
+* 如果使用nginx以外的服務發布方式，也需要確保滿足`能跨域`，`正確返回404`這兩個條件。
+* 您可以參考[這篇文章](https://serverfault.com/questions/393532/allowing-cross-origin-requests-cors-on-nginx-for-404-responses/700670)來正確地配置nginx。
+* 這裏提供壹份nginx配置demo供您參考。
+```
+server {
+    listen 8000;
+    server_name 127.0.0.1:8000;
+    location / {
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,DELETE' always;
+        add_header 'Access-Control-Allow-Header' 'Content-Type,*' always;
+	    root  /home/altizure/demo/data;
+        index index.html index.htm;
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504  /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+```
